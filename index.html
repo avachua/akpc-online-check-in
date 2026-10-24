@@ -56,7 +56,51 @@ async function init(){if(API_URL.includes('PASTE_YOUR')){message('Setup required
 function nextRules(){selectedMember=members.find(m=>m.name.toLowerCase()=== $('member').value.trim().toLowerCase());selectedEvent=events.find(e=>String(e.id)===$('event').value);if(!selectedEvent){message('Select an active event first.','error');return}if(!selectedMember){message('Type and select your full name from the official member list.','error');return}loading('Verifying your member record...');setTimeout(()=>{hideLoading();$('selectCard').classList.add('hidden');$('rulesCard').classList.remove('hidden')},650)}
 function back(){$('rulesCard').classList.add('hidden');$('selectCard').classList.remove('hidden')}
 async function checkIn(){if(!$('ack').checked){message('Please acknowledge the rules and regulations.','error','passNotice');return}loading('Checking you in and generating your boarding pass...');try{ticket=await api({api:'onlineCheckIn',eventId:selectedEvent.id,memberName:selectedMember.name});hideLoading();if(!ticket||!ticket.success){message(ticket&&ticket.message||'Check-in failed.','error','notice');$('selectCard').classList.remove('hidden');$('rulesCard').classList.add('hidden');return}$('rulesCard').classList.add('hidden');$('passCard').classList.remove('hidden');$('passEvent').textContent=ticket.eventName||selectedEvent.name;$('passDate').textContent=(ticket.eventDate||selectedEvent.date)+' · Boarding '+(ticket.boardingTime||'TBA');$('passName').textContent=ticket.name;$('passClass').textContent='Grade '+(ticket.grade||'—')+' · '+(ticket.section||'—');$('passSeq').textContent=ticket.sequenceLabel||('SEQ'+String(ticket.sequence).padStart(3,'0'));$('passQR').src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&format=png&data='+encodeURIComponent(ticket.qrText||JSON.stringify(ticket.qrPayload||{}));$('emailStatus').textContent=ticket.emailSent?'Boarding pass automatically emailed to the email address on your member record.':(ticket.emailMessage||'Automatic email status unavailable.');message(ticket.emailSent?'Check-in complete. Your boarding pass has been emailed.':'Check-in complete. Please use EMAIL if automatic email was unsuccessful.',ticket.emailSent?'success':'info','passNotice')}catch(e){hideLoading();message(e.message,'error','notice')}}
-function printPass(){if(!ticket)return;const w=window.open('','_blank','width=500,height=700');if(!w){message('Allow pop-ups to print your boarding pass.','error','passNotice');return}w.document.write('<html><head><title>AKPC Boarding Pass</title><style>body{font-family:Arial;text-align:center;padding:24px;color:#111}.brand{font-weight:900;color:#102b4e}.event{font-size:22px;font-weight:bold;border-bottom:1px solid;padding:15px}.name{font-size:24px;font-weight:bold;margin-top:24px}.seq{font-size:24px;font-weight:bold;margin:20px}</style></head><body><div class="brand">ATENEO KNIGHTS PICKLEBALL CLUB</div><h3>BOARDING PASS</h3><div class="event">'+esc(ticket.eventName||selectedEvent.name)+'</div><p>BOARDING TIME: '+esc(ticket.boardingTime||'TBA')+'</p><div class="name">'+esc(ticket.name)+'</div><p>Grade: '+esc(ticket.grade||'—')+' · '+esc(ticket.section||'—')+'</p><div class="seq">'+esc(ticket.sequenceLabel||'')+'</div><img style="width:180px;height:180px" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&format=png&data='+encodeURIComponent(ticket.qrText||JSON.stringify(ticket.qrPayload||{}))+'"><p>Agent: AG-ONLINE</p><p>Present this pass at the boarding gate.</p></body></html>');w.document.close();w.focus();w.print()}
+function printPass(){
+  if(!ticket)return;
+  const qrValue=ticket.qrText||JSON.stringify(ticket.qrPayload||{});
+  const qrUrl='https://api.qrserver.com/v1/create-qr-code/?size=500x500&format=png&data='+encodeURIComponent(qrValue);
+  const eventName=esc(ticket.eventName||(selectedEvent&&selectedEvent.name)||'');
+  const eventDate=esc(ticket.eventDate||(selectedEvent&&selectedEvent.date)||'');
+  const seq=esc(ticket.sequenceLabel||('SEQ '+String(ticket.sequence||0).padStart(3,'0')));
+  const w=window.open('','_blank','width=550,height=750');
+  if(!w){message('Allow pop-ups to print your boarding pass.','error','passNotice');return;}
+  w.document.open();
+  w.document.write(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>AKPC A6 Boarding Pass</title>
+  <style>
+    @page{size:105mm 148mm;margin:0}
+    *{box-sizing:border-box}
+    html,body{width:105mm;min-height:148mm;margin:0;padding:0;background:white;color:#102b4e;font-family:Arial,Helvetica,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .ticket{width:105mm;height:148mm;padding:7mm;display:flex;flex-direction:column;overflow:hidden}
+    .head{background:#102b4e;color:white;text-align:center;padding:5mm 3mm;border-bottom:2mm solid #d8b36a}
+    .club{font-size:9pt;font-weight:900;letter-spacing:.7px}
+    .heading{font-size:21pt;font-weight:900;letter-spacing:1px;margin-top:2mm}
+    .event{text-align:center;padding:4mm 1mm 3mm;border-bottom:1px solid #cbd4df}
+    .eventname{font-size:13pt;font-weight:900;overflow-wrap:anywhere}
+    .details{font-size:9pt;margin-top:2mm;color:#35445a;line-height:1.5}
+    .seq{text-align:center;border:1.2px dashed #102b4e;margin:4mm auto 2mm;padding:2mm 6mm;font-size:21pt;font-weight:900;white-space:nowrap}
+    .name{text-align:center;font-size:16pt;font-weight:900;overflow-wrap:anywhere;margin-top:2mm}
+    .class{text-align:center;font-size:10pt;margin-top:1mm;color:#35445a}
+    .qrwrap{display:flex;justify-content:center;align-items:center;flex:1;min-height:0;padding:2mm 0}
+    .qr{width:43mm;height:43mm;object-fit:contain}
+    .foot{text-align:center;font-size:8pt;line-height:1.5;border-top:1px solid #cbd4df;padding-top:2mm;color:#35445a}
+    .agent{font-weight:900;color:#102b4e}
+    @media screen{body{margin:16px auto;box-shadow:0 0 20px #0002}}
+    @media print{html,body{width:105mm;height:148mm}.ticket{page-break-inside:avoid;break-inside:avoid}}
+  </style></head><body><article class="ticket">
+    <header class="head"><div class="club">ATENEO KNIGHTS PICKLEBALL CLUB</div><div class="heading">BOARDING PASS</div></header>
+    <section class="event"><div class="eventname">${eventName}</div><div class="details">${eventDate} &nbsp;·&nbsp; BOARDING: ${esc(ticket.boardingTime||'TBA')}</div></section>
+    <div class="seq">${seq}</div><div class="name">${esc(ticket.name)}</div>
+    <div class="class">GRADE ${esc(ticket.grade||'—')} &nbsp;·&nbsp; ${esc(ticket.section||'—')}</div>
+    <div class="qrwrap"><img class="qr" src="${qrUrl}" alt="Ticket QR code"></div>
+    <footer class="foot"><div class="agent">CHECK-IN AGENT: AG-ONLINE</div><div>PRESENT THIS PASS AT THE BOARDING GATE</div></footer>
+  </article><script>
+    const img=document.querySelector('.qr');
+    function ready(){setTimeout(()=>window.print(),250)}
+    if(img.complete)ready();else{img.addEventListener('load',ready,{once:true});img.addEventListener('error',()=>alert('QR code could not load. Check internet connection before printing.'),{once:true})}
+  <\/script></body></html>`);
+  w.document.close();
+}
 async function emailPass(){if(!ticket)return;message('The automatic email is sent during check-in. If it failed, retry check-in after checking your roster email address.','info','passNotice')}
 function reset(){ticket=null;selectedMember=null;selectedEvent=null;$('member').value='';$('ack').checked=false;$('passCard').classList.add('hidden');$('rulesCard').classList.add('hidden');$('selectCard').classList.remove('hidden');$('notice').className='notice';$('passNotice').className='notice'}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
