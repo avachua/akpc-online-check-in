@@ -45,7 +45,7 @@ button.secondary{background:#e9eef5;color:var(--navy)}button:disabled{opacity:.5
 <div class="overlay" id="overlay"><div class="panel"><div class="anim"><div class="paddle"></div><div class="ball"></div></div><b>ATENEO KNIGHTS PICKLEBALL CLUB</b><h2 style="color:var(--gold);margin:12px 0 4px">LOADING...</h2><div id="loadingText">Preparing your boarding pass...</div><p style="font-size:12px;color:#d9e2ef">Please wait while we process your request.</p></div></div>
 <script>
 /* Replace with your deployed Apps Script Web App URL ending in /exec. */
-const API_URL='PASTE_YOUR_APPS_SCRIPT_WEB_APP_EXEC_URL_HERE';
+const API_URL='https://script.google.com/macros/s/AKfycbwZOYoWt__IVF8NXy_ZSWTohlqWg5yKbHxZZP1Lv2Lz-7mTt_ab1fjdRaMBDmKE5yH8Ng/exec';
 let events=[],members=[],ticket=null,selectedMember=null,selectedEvent=null;
 const $=id=>document.getElementById(id);
 function message(text,type='info',target='notice'){const el=$(target);el.textContent=text;el.className='notice show '+type}
