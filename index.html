@@ -1,38 +1,396 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AKPC Online Check-In</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AKPC | Online Check-In</title>
 <style>
-:root{--navy:#102b4e;--navy2:#173d68;--gold:#d8b36a;--bg:#f3f5f8;--ink:#1c2735;--muted:#68778a;--line:#dce2ea;--green:#16834a;--red:#b72f37}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}button,input,select{font:inherit}button{border:0;border-radius:9px;padding:13px 17px;font-weight:800;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.header{background:var(--navy);border-bottom:4px solid var(--gold);color:white;padding:23px}.head-inner{max-width:760px;margin:auto}.brand{font-size:19px;font-weight:900;letter-spacing:1px}.sub{color:#d9e2ef;font-size:12px;margin-top:6px;letter-spacing:1px}.wrap{max-width:760px;margin:25px auto;padding:0 16px 40px}.eventbar,.card{background:white;border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 6px 22px #102b4e0b}.field{display:grid;gap:8px;margin:15px 0}.field label{font-size:11px;font-weight:900;letter-spacing:.8px;color:var(--muted)}select,input{width:100%;padding:13px;border:1px solid var(--line);border-radius:8px;background:white}.title{font-size:21px;color:var(--navy);margin:0 0 8px}.desc{color:var(--muted);line-height:1.5}.primary{background:var(--navy);color:white}.secondary{background:#e9eef5;color:var(--navy)}.goldline{height:3px;background:var(--gold);margin:18px 0}.hidden{display:none!important}.rules{line-height:1.75;padding-left:22px}.rules li{margin-bottom:7px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.notice{margin-top:12px;font-size:13px;line-height:1.5}.ok{color:var(--green)}.err{color:var(--red)}.pass{text-align:center;border:1px solid #cfd6df;border-radius:10px;padding:22px;background:white;color:#111}.pass-brand{font-size:12px;font-weight:900;color:var(--navy);letter-spacing:.6px}.pass-event{font-size:19px;font-weight:900;margin:13px 0}.pass-name{font-size:20px;font-weight:900;margin:10px 0}.seq{font-size:17px;font-weight:900;margin:12px}.qr{display:flex;justify-content:center;margin:15px auto}.footer{font-size:10px;letter-spacing:1px}.loading{position:fixed;inset:0;background:#07182acc;display:none;align-items:center;justify-content:center;padding:18px;z-index:1000;backdrop-filter:blur(3px)}.loading.show{display:flex}.loadcard{background:white;border-radius:16px;padding:27px 22px;max-width:390px;width:100%;text-align:center;border-top:5px solid var(--gold);box-shadow:0 20px 60px #0005}.loadbrand{font-size:12px;font-weight:900;letter-spacing:1px;color:var(--navy)}.loadlabel{font-weight:900;letter-spacing:2px;margin-top:16px;color:var(--navy)}.dots:after{content:'...';animation:dots 1s steps(4,end) infinite}@keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%,100%{content:'...'}}.court{height:105px;position:relative;margin:8px auto 15px;width:230px;overflow:hidden;border-bottom:2px solid #d7e0eb}.ball{position:absolute;width:22px;height:22px;border-radius:50%;background:#d6ed55;border:2px solid #71852b;left:47px;top:58px;animation:bounce 1s ease-in-out infinite}.ball:before,.ball:after{content:'';position:absolute;background:#71852b;width:2px;height:17px;top:1px;left:8px;transform:rotate(40deg)}.ball:after{transform:rotate(-40deg)}.paddle{position:absolute;width:45px;height:55px;background:var(--navy2);border:3px solid var(--gold);border-radius:50% 50% 44% 44%;left:135px;top:28px;transform:rotate(25deg);animation:paddle 1s ease-in-out infinite}.paddle:after{content:'';position:absolute;width:10px;height:28px;background:#b98b44;border-radius:4px;left:14px;top:45px}@keyframes bounce{0%,100%{transform:translateY(0) translateX(0)}45%{transform:translateY(-40px) translateX(72px)}70%{transform:translateY(-8px) translateX(105px)}}@keyframes paddle{0%,100%{transform:rotate(25deg)}50%{transform:rotate(-18deg)}}.loadmain{font-weight:800;color:var(--navy)}.loadsub{font-size:12px;color:var(--muted);margin-top:7px}@media(max-width:520px){.header{padding:18px}.brand{font-size:16px}.card,.eventbar{padding:16px}.actions button{flex:1}}
-</style></head>
+:root{--navy:#102b4e;--gold:#d8b36a;--bg:#f3f5f8;--text:#1c2735;--muted:#68778a;--border:#dce2ea}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+header{background:var(--navy);color:#fff;padding:22px;border-bottom:4px solid var(--gold);text-align:center}
+.brand{font-weight:900;letter-spacing:1px}.sub{font-size:12px;color:#d9e2ef;margin-top:6px}
+main{max-width:760px;margin:24px auto;padding:0 16px}.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px;box-shadow:0 3px 12px #102b4e08}
+h1,h2{color:var(--navy);margin-top:0}p{line-height:1.55;color:var(--muted)}label{display:block;font-size:12px;font-weight:bold;margin:16px 0 7px}
+select,input{width:100%;padding:13px;border:1px solid #cbd4df;border-radius:8px;background:white;font-size:16px;min-height:46px}
+button{border:0;border-radius:8px;padding:13px 17px;font-weight:bold;cursor:pointer;background:var(--navy);color:#fff}
+button.secondary{background:#e9eef5;color:var(--navy)}button:disabled{opacity:.55;cursor:wait}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.rules{line-height:1.8;padding-left:22px}.ack{display:flex;gap:10px;align-items:flex-start;line-height:1.5;margin:18px 0}.ack input{width:auto;min-height:0;margin-top:4px}
+.notice{display:none;padding:12px;border-radius:8px;margin-top:14px;line-height:1.5}.notice.show{display:block}.success{background:#e8f7ee;color:#126637}.error{background:#fff0f0;color:#a51f1f}.info{background:#edf4ff;color:#204d83}
+.hidden{display:none!important}.pass{border:1px dashed #9ba8b8;border-radius:10px;padding:18px;margin-top:16px}.seq{font-size:22px;font-weight:900;color:var(--navy)}
+.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#091424ba;backdrop-filter:blur(3px);z-index:99;padding:18px;color:white;text-align:center}.overlay.show{display:flex}.panel{width:min(420px,100%);background:var(--navy);border:2px solid var(--gold);border-radius:18px;padding:28px 24px;box-shadow:0 20px 60px #0005}
+.anim{height:96px;display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:12px}.paddle{width:35px;height:58px;background:var(--gold);border:4px solid #fff1ce;border-radius:50% 50% 40% 40%;position:relative;transform-origin:50% 80%;animation:paddle .65s ease-in-out infinite alternate}.paddle:after{content:"";position:absolute;width:9px;height:30px;background:var(--gold);border:2px solid #fff1ce;border-radius:5px;left:9px;bottom:-30px}.ball{width:27px;height:27px;background:#d7f34a;border-radius:50%;position:relative;animation:ball .5s ease-in-out infinite alternate}.ball:after{content:"";position:absolute;inset:5px;border:2px dotted #29401c;border-radius:50%}@keyframes paddle{to{transform:rotate(22deg) translateY(-8px)}}@keyframes ball{to{transform:translate(24px,-20px)}}
+@media(max-width:520px){.card{padding:18px}.actions button{flex:1}}
+</style>
+</head>
 <body>
-<header class="header"><div class="head-inner"><div class="brand">ATENEO KNIGHTS PICKLEBALL CLUB</div><div class="sub">ONLINE CHECK-IN · BOARDING PASS ISSUANCE</div></div></header>
-<main class="wrap">
- <div class="eventbar"><div class="field" style="margin:0"><label for="eventSelect">SELECT ACTIVE EVENT</label><select id="eventSelect"><option value="">Loading events...</option></select></div><div id="apiMessage" class="notice"></div></div>
- <section class="card" id="stepMember"><h1 class="title">1. Select your name</h1><p class="desc">Choose your name from the official AKPC member roster to begin online check-in.</p><div class="field"><label for="memberSelect">MEMBER NAME</label><input id="memberSelect" list="memberList" placeholder="Type and select your full name" autocomplete="off"><datalist id="memberList"></datalist></div><div id="memberDetails" class="desc"></div><button class="primary" id="nextBtn" onclick="showRules()">NEXT</button><div id="memberMessage" class="notice"></div></section>
- <section class="card hidden" id="stepRules"><h1 class="title">2. Rules and regulations</h1><p class="desc">Read these requirements carefully before checking in.</p><ol class="rules"><li>Ensure all required documents, including the PCF and applicable parent/guardian consent forms, have been submitted.</li><li>Obtain the required medical clearance issued by the school clinic before participating.</li><li>Arrive at the designated boarding or assembly area on time and follow the event schedule.</li><li>Check that you have all personal belongings and required items before leaving the area.</li><li>Follow instructions from authorized AKPC officers, event staff, and school personnel.</li><li>Keep your boarding pass accessible and do not share it with another person.</li><li>Maintain respectful conduct, cleanliness, and care for school facilities and equipment.</li><li>Promptly inform an authorized officer about medical concerns, missing documents, or any issue affecting your participation.</li></ol><label style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:14px"><input id="rulesAck" type="checkbox" style="width:auto;margin-top:3px"><span>I have read and agree to follow the rules and regulations.</span></label><div class="actions"><button class="secondary" onclick="backToMember()">BACK</button><button class="primary" onclick="checkIn()">CHECK IN &amp; GET BOARDING PASS</button></div><div id="rulesMessage" class="notice"></div></section>
- <section class="card hidden" id="stepPass"><h1 class="title">3. Boarding pass issued</h1><p id="passStatus" class="desc"></p><div class="pass" id="printArea"><div class="pass-brand">ATENEO KNIGHTS PICKLEBALL CLUB</div><div style="font-size:10px;letter-spacing:1px;margin-top:6px">BOARDING PASS</div><div id="passEvent" class="pass-event"></div><div class="goldline"></div><div style="font-size:10px;color:#555">MEMBER</div><div id="passName" class="pass-name"></div><div id="passClass" style="font-size:12px"></div><div id="passSequence" class="seq"></div><div id="passQr" class="qr"></div><div class="footer">PRESENT THIS PASS AT THE BOARDING GATE</div></div><div class="actions"><button class="primary" onclick="printPass()">PRINT</button><button class="secondary" onclick="emailPass()">EMAIL</button><button class="secondary" onclick="resetFlow()">NEW MEMBER</button></div><div id="passMessage" class="notice"></div></section>
+<header><div class="brand">ATENEO KNIGHTS PICKLEBALL CLUB</div><div class="sub">ONLINE CHECK-IN · BOARDING PASS ISSUANCE</div></header>
+<main>
+<section class="card" id="selectCard"><h1>Online Check-In</h1><p>Select your name and event to begin. Your check-in agent will automatically be recorded as <b>AG-ONLINE</b>.</p>
+<label for="event">ACTIVE EVENT</label><select id="event"><option value="">Loading events...</option></select>
+<label for="member">MEMBER NAME</label><input id="member" list="memberList" placeholder="Type and select your full name" autocomplete="off"><datalist id="memberList"></datalist>
+<div class="actions"><button onclick="nextRules()">Next</button></div><div id="notice" class="notice"></div></section>
+<section class="card hidden" id="rulesCard"><h2>Rules and Regulations</h2><ol class="rules">
+<li>Ensure all required documents, including PCF and parent/guardian consent forms where applicable, have been submitted.</li>
+<li>Obtain the required medical clearance issued by the school clinic before participating.</li>
+<li>Arrive at the designated boarding or assembly area on time.</li>
+<li>Gather and check all personal belongings before leaving the area.</li>
+<li>Follow instructions from authorized officers, club officers, and event personnel.</li>
+<li>Keep your boarding pass accessible and do not share it with another person.</li>
+<li>Maintain proper conduct, respect school property, and keep the venue clean.</li>
+<li>Immediately inform an authorized officer of medical concerns, missing documents, or participation issues.</li>
+</ol><label class="ack"><input type="checkbox" id="ack"> I have read and understood the rules and regulations.</label>
+<div class="actions"><button class="secondary" onclick="back()">Back</button><button id="checkInBtn" onclick="checkIn()">Check In &amp; Print Boarding Passes</button></div></section>
+<section class="card hidden" id="passCard"><h2>Boarding Pass Issuance</h2><p id="passStatus">Your check-in is complete.</p><div class="pass"><div><b id="passEvent"></b></div><p id="passDate"></p><h2 id="passName"></h2><div id="passClass"></div><div class="seq" id="passSeq"></div><img id="passQR" alt="Boarding pass QR code" style="width:180px;height:180px;object-fit:contain;display:block;margin:16px auto"><p>Agent: AG-ONLINE</p><p id="emailStatus"></p></div><div class="actions"><button onclick="printPass()">PRINT</button><button class="secondary" onclick="emailPass()">EMAIL</button><button class="secondary" onclick="reset()">NEW MEMBER</button></div><div id="passNotice" class="notice"></div></section>
 </main>
-<div class="loading" id="loading" role="status" aria-live="polite"><div class="loadcard"><div class="loadbrand">ATENEO KNIGHTS PICKLEBALL CLUB</div><div class="loadlabel">LOADING<span class="dots"></span></div><div class="court"><div class="ball"></div><div class="paddle"></div></div><div class="loadmain" id="loadMain">Preparing your boarding pass...</div><div class="loadsub">Please wait while we process your request.</div></div></div>
+<div class="overlay" id="overlay"><div class="panel"><div class="anim"><div class="paddle"></div><div class="ball"></div></div><b>ATENEO KNIGHTS PICKLEBALL CLUB</b><h2 style="color:var(--gold);margin:12px 0 4px">LOADING...</h2><div id="loadingText">Preparing your boarding pass...</div><p style="font-size:12px;color:#d9e2ef">Please wait while we process your request.</p></div></div>
 <script>
-// IMPORTANT: Replace this with your deployed Apps Script Web App URL ending in /exec.
-const API_URL = 'https://script.google.com/macros/s/AKfycbwZOYoWt__IVF8NXy_ZSWTohlqWg5yKbHxZZP1Lv2Lz-7mTt_ab1fjdRaMBDmKE5yH8Ng/exec';
-let members=[],events=[],selectedMember=null,currentTicket=null;
+/* Existing deployed Apps Script URL */
+const API_URL='https://script.google.com/macros/s/AKfycbwZOYoWt__IVF8NXy_ZSWTohlqWg5yKbHxZZP1Lv2Lz-7mTt_ab1fjdRaMBDmKE5yH8Ng/exec';
+
+let events=[],members=[],ticket=null,selectedMember=null,selectedEvent=null;
+let checkInInProgress=false;
+
 const $=id=>document.getElementById(id);
-function loading(on,msg){$('loadMain').textContent=msg||'Preparing your boarding pass...';$('loading').classList.toggle('show',!!on)}
-function notice(id,msg,type=''){const el=$(id);el.className='notice '+(type==='error'?'err':type==='success'?'ok':'');el.textContent=msg||''}
-function api(params){return new Promise((resolve,reject)=>{if(!API_URL||API_URL.includes('PASTE_YOUR')){reject(new Error('Set API_URL to your deployed Apps Script Web App URL in this GitHub file.'));return}const callback='akpcCb'+Date.now()+Math.floor(Math.random()*10000);const script=document.createElement('script');const timeout=setTimeout(()=>{cleanup();reject(new Error('The AKPC server did not respond. Please try again.'))},25000);function cleanup(){clearTimeout(timeout);delete window[callback];script.remove()}window[callback]=data=>{cleanup();resolve(data)};script.onerror=()=>{cleanup();reject(new Error('Could not connect to the AKPC server.'))};const query=new URLSearchParams({...params,callback});script.src=API_URL+'?'+query.toString();document.body.appendChild(script)})}
-function eventNow(){return events.find(e=>String(e.id)===String($('eventSelect').value))}
-function findMember(){const value=$('memberSelect').value.trim().toUpperCase();return members.find(m=>String(m.name||'').trim().toUpperCase()===value)||null}
-async function init(){try{const data=await api({api:'initialData'});if(!data||data.success!==true)throw new Error(data?.message||'Unable to load AKPC data.');members=data.members||[];events=data.events||[];$('memberList').replaceChildren(...members.map(m=>new Option(m.name,m.name)));$('eventSelect').replaceChildren(...events.map(e=>new Option(`${e.name}${e.date?' · '+e.date:''}`,e.id)));if(!events.length)notice('apiMessage','No active events are available.','error');else notice('apiMessage','Member roster and active events loaded.','success')}catch(e){notice('apiMessage',e.message,'error')}}
-$('memberSelect').addEventListener('input',()=>{selectedMember=findMember();$('memberDetails').textContent=selectedMember?[selectedMember.grade,selectedMember.section].filter(Boolean).join(' · '):'';notice('memberMessage','')});
-function showRules(){selectedMember=findMember();if(!selectedMember){notice('memberMessage','Please select your name from the official roster.','error');return}if(!$('eventSelect').value){notice('memberMessage','Please select an active event.','error');return}loading(true,'Loading rules and regulations...');setTimeout(()=>{loading(false);$('stepMember').classList.add('hidden');$('stepRules').classList.remove('hidden')},650)}
-function backToMember(){$('stepRules').classList.add('hidden');$('stepMember').classList.remove('hidden')}
-async function checkIn(){if(!$('rulesAck').checked){notice('rulesMessage','Please acknowledge the rules and regulations first.','error');return}const event=eventNow();selectedMember=findMember();if(!event||!selectedMember){notice('rulesMessage','Select a valid event and member, then try again.','error');return}loading(true,'Checking you in and generating your boarding pass...');try{const result=await api({api:'onlineCheckIn',eventId:event.id,memberName:selectedMember.name});if(!result||result.success!==true)throw new Error(result?.message||'Check-in failed.');currentTicket=result;$('passEvent').textContent=result.eventName||event.name;$('passName').textContent=result.name;$('passClass').textContent=[result.grade,result.section].filter(Boolean).join(' / ')||'—';$('passSequence').textContent=result.sequenceLabel||('SEQ'+String(result.sequence).padStart(3,'0'));$('passQr').replaceChildren();new QRCode($('passQr'),{text:result.qrText||JSON.stringify(result.qrPayload||{name:result.name,sequence:result.sequenceLabel}),width:190,height:190,correctLevel:QRCode.CorrectLevel.M});$('passStatus').textContent=result.emailSent?'Your check-in is complete. A boarding pass was automatically emailed to the address on your member record.':('Your check-in is complete. Automatic email: '+(result.emailMessage||'could not be confirmed')+'. You can try EMAIL below.');notice('passMessage',result.emailSent?result.emailMessage:result.emailMessage,' '+(result.emailSent?'success':'error'));$('stepRules').classList.add('hidden');$('stepPass').classList.remove('hidden')}catch(e){notice('rulesMessage',e.message,'error')}finally{loading(false)}}
-function printPass(){if(!currentTicket)return;const w=window.open('','_blank','width=650,height=800');if(!w){notice('passMessage','Please allow pop-ups to print your boarding pass.','error');return}const area=$('printArea').cloneNode(true);const qr=area.querySelector('#passQr');if(qr)qr.innerHTML=$('passQr').innerHTML;w.document.write('<!doctype html><html><head><title>AKPC Boarding Pass</title><style>@page{size:105mm 148mm;margin:6mm}body{font-family:Arial;text-align:center;color:#111}.pass{padding:8mm;border:1px solid #ccc}.pass-brand{font-size:12pt;font-weight:bold;color:#102b4e}.pass-event{font-size:16pt;font-weight:bold;margin:5mm}.pass-name{font-size:15pt;font-weight:bold;margin:3mm}.seq{font-weight:bold;margin:4mm}.qr img{width:45mm;height:45mm}.goldline{border-top:2px solid #d8b36a;margin:4mm}</style></head><body>'+area.outerHTML+'</body></html>');w.document.close();w.onload=()=>{w.focus();w.print()}}
-async function emailPass(){if(!currentTicket)return;loading(true,'Emailing your boarding pass...');try{const result=await api({api:'onlineEmail',eventId:currentTicket.eventId,memberName:currentTicket.name,sequence:currentTicket.sequence});if(!result||result.success!==true)throw new Error(result?.message||'Email failed.');notice('passMessage',result.message||'Boarding pass emailed successfully.','success')}catch(e){notice('passMessage',e.message,'error')}finally{loading(false)}}
-function resetFlow(){selectedMember=null;currentTicket=null;$('memberSelect').value='';$('memberDetails').textContent='';$('rulesAck').checked=false;$('stepPass').classList.add('hidden');$('stepRules').classList.add('hidden');$('stepMember').classList.remove('hidden');notice('memberMessage','');notice('rulesMessage','');notice('passMessage','')}
-init();
-</script></body></html>
+
+function message(text,type='info',target='notice'){
+  const el=$(target);
+  el.textContent=text;
+  el.className='notice show '+type;
+}
+
+function loading(text){
+  $('loadingText').textContent=text;
+  $('overlay').classList.add('show');
+}
+
+function hideLoading(){
+  $('overlay').classList.remove('show');
+}
+
+function api(params){
+  return new Promise((resolve,reject)=>{
+    const cb='akpcCb'+Date.now()+Math.floor(Math.random()*10000);
+    const script=document.createElement('script');
+    const timeout=setTimeout(()=>{
+      cleanup();
+      reject(new Error('The server did not respond. Check the Apps Script URL and deployment access.'));
+    },25000);
+
+    function cleanup(){
+      clearTimeout(timeout);
+      delete window[cb];
+      script.remove();
+    }
+
+    window[cb]=data=>{
+      cleanup();
+      resolve(data);
+    };
+
+    script.onerror=()=>{
+      cleanup();
+      reject(new Error('Unable to contact the AKPC server.'));
+    };
+
+    script.src=API_URL+'?'+new URLSearchParams({...params,callback:cb}).toString();
+    document.body.appendChild(script);
+  });
+}
+
+async function init(){
+  if(API_URL.includes('PASTE_YOUR')){
+    message('Setup required: paste your deployed Apps Script Web App URL into API_URL in this file.','error');
+    return;
+  }
+
+  try{
+    const [ev,mem]=await Promise.all([
+      api({api:'events'}),
+      api({api:'members'})
+    ]);
+
+    events=Array.isArray(ev)?ev:[];
+    members=Array.isArray(mem)?mem:[];
+
+    $('event').innerHTML='<option value="">Select an event</option>';
+
+    events.forEach(e=>{
+      const o=document.createElement('option');
+      o.value=e.id;
+      o.textContent=e.name+' — '+e.date;
+      $('event').appendChild(o);
+    });
+
+    $('memberList').replaceChildren();
+
+    members.forEach(m=>{
+      const o=document.createElement('option');
+      o.value=m.name;
+      $('memberList').appendChild(o);
+    });
+  }catch(e){
+    message(e.message,'error');
+  }
+}
+
+function firstValue(...values){
+  return values.find(v=>v!==undefined&&v!==null&&String(v).trim()!=='')||'';
+}
+
+function gradeText(){
+  const raw=firstValue(
+    ticket&&ticket.grade,
+    ticket&&ticket.gradeLevel,
+    ticket&&ticket.grade_level,
+    selectedMember&&selectedMember.grade,
+    selectedMember&&selectedMember.gradeLevel,
+    selectedMember&&selectedMember.grade_level
+  );
+
+  if(!raw)return 'GRADE N/A';
+
+  const v=String(raw).trim().toUpperCase();
+  return /^GRADE\b/.test(v)?v:'GRADE '+v;
+}
+
+function sectionText(){
+  return String(firstValue(
+    ticket&&ticket.section,
+    ticket&&ticket.classSection,
+    selectedMember&&selectedMember.section,
+    selectedMember&&selectedMember.classSection
+  )||'SECTION N/A').trim().toUpperCase();
+}
+
+function classText(){
+  return gradeText()+' · '+sectionText();
+}
+
+function nextRules(){
+  selectedMember=members.find(
+    m=>m.name.toLowerCase()===$('member').value.trim().toLowerCase()
+  );
+
+  selectedEvent=events.find(e=>String(e.id)===$('event').value);
+
+  if(!selectedEvent){
+    message('Select an active event first.','error');
+    return;
+  }
+
+  if(!selectedMember){
+    message('Type and select your full name from the official member list.','error');
+    return;
+  }
+
+  $('notice').className='notice';
+
+  loading('Verifying your member record...');
+
+  setTimeout(()=>{
+    hideLoading();
+    $('selectCard').classList.add('hidden');
+    $('rulesCard').classList.remove('hidden');
+  },650);
+}
+
+function back(){
+  $('rulesCard').classList.add('hidden');
+  $('selectCard').classList.remove('hidden');
+}
+
+async function checkIn(){
+  if(checkInInProgress)return;
+
+  if(!$('ack').checked){
+    message('Please acknowledge the rules and regulations.','error','passNotice');
+    return;
+  }
+
+  if(!selectedEvent||!selectedMember){
+    message('Please select your event and member again.','error');
+    return;
+  }
+
+  checkInInProgress=true;
+
+  const btn=$('checkInBtn');
+  btn.disabled=true;
+  btn.textContent='Checking In...';
+
+  loading('Checking for existing check-in and generating your boarding pass...');
+
+  try{
+    ticket=await api({
+      api:'onlineCheckIn',
+      eventId:selectedEvent.id,
+      memberName:selectedMember.name
+    });
+
+    hideLoading();
+
+    if(!ticket||ticket.success!==true){
+      const errorText=ticket&&ticket.message
+        ?ticket.message
+        :'Check-in failed. Please try again.';
+
+      const duplicate=/already checked.?in|duplicate|already registered/i.test(errorText);
+
+      message(
+        duplicate?'DUPLICATE CHECK-IN: '+errorText:errorText,
+        'error',
+        'notice'
+      );
+
+      $('rulesCard').classList.add('hidden');
+      $('selectCard').classList.remove('hidden');
+
+      return;
+    }
+
+    $('rulesCard').classList.add('hidden');
+    $('passCard').classList.remove('hidden');
+
+    $('passEvent').textContent=ticket.eventName||selectedEvent.name;
+
+    $('passDate').textContent=
+      (ticket.eventDate||selectedEvent.date)+
+      ' · Boarding '+(ticket.boardingTime||'TBA');
+
+    $('passName').textContent=ticket.name;
+    $('passClass').textContent=classText();
+
+    $('passSeq').textContent=
+      ticket.sequenceLabel||
+      ('SEQ'+String(ticket.sequence).padStart(3,'0'));
+
+    $('passQR').src=
+      'https://api.qrserver.com/v1/create-qr-code/?size=300x300&format=png&data='+
+      encodeURIComponent(ticket.qrText||JSON.stringify(ticket.qrPayload||{}));
+
+    $('emailStatus').textContent=ticket.emailSent
+      ?'Boarding pass automatically emailed to the email address on your member record.'
+      :(ticket.emailMessage||'Automatic email status unavailable.');
+
+    message(
+      ticket.emailSent
+        ?'Check-in complete. Your boarding pass has been emailed.'
+        :'Check-in complete. Please use EMAIL if automatic email was unsuccessful.',
+      ticket.emailSent?'success':'info',
+      'passNotice'
+    );
+
+  }catch(e){
+    hideLoading();
+    message(e.message,'error','notice');
+
+  }finally{
+    checkInInProgress=false;
+    btn.disabled=false;
+    btn.textContent='Check In & Print Boarding Passes';
+  }
+}
+
+function printPass(){
+  if(!ticket)return;
+
+  const qrValue=ticket.qrText||JSON.stringify(ticket.qrPayload||{});
+  const qrUrl='https://api.qrserver.com/v1/create-qr-code/?size=500x500&format=png&data='+encodeURIComponent(qrValue);
+  const eventName=esc(ticket.eventName||(selectedEvent&&selectedEvent.name)||'');
+  const eventDate=esc(ticket.eventDate||(selectedEvent&&selectedEvent.date)||'');
+  const seq=esc(ticket.sequenceLabel||('SEQ '+String(ticket.sequence||0).padStart(3,'0')));
+
+  const w=window.open('','_blank','width=550,height=750');
+
+  if(!w){
+    message('Allow pop-ups to print your boarding pass.','error','passNotice');
+    return;
+  }
+
+  w.document.open();
+
+  w.document.write(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>AKPC A6 Boarding Pass</title>
+  <style>
+    @page{size:105mm 148mm;margin:0}
+    *{box-sizing:border-box}
+    html,body{width:105mm;height:148mm;margin:0;padding:0;background:white;color:#102b4e;font-family:Arial,Helvetica,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .ticket{width:105mm;height:148mm;padding:7mm;display:flex;flex-direction:column;overflow:hidden}
+    .head{background:#102b4e;color:white;text-align:center;padding:5mm 3mm;border-bottom:2mm solid #d8b36a}
+    .club{font-size:9pt;font-weight:900;letter-spacing:.7px}
+    .heading{font-size:21pt;font-weight:900;letter-spacing:1px;margin-top:2mm}
+    .event{text-align:center;padding:4mm 1mm 3mm;border-bottom:1px solid #cbd4df}
+    .eventname{font-size:13pt;font-weight:900;overflow-wrap:anywhere}
+    .details{font-size:9pt;margin-top:2mm;color:#35445a;line-height:1.5}
+    .seq{text-align:center;border:1.2px dashed #102b4e;margin:4mm auto 2mm;padding:2mm 6mm;font-size:21pt;font-weight:900;white-space:nowrap}
+    .name{text-align:center;font-size:16pt;font-weight:900;overflow-wrap:anywhere;margin-top:2mm}
+    .class{text-align:center;font-size:10pt;margin-top:1mm;color:#35445a}
+    .qrwrap{display:flex;justify-content:center;align-items:center;flex:1;min-height:0;padding:2mm 0}
+    .qr{width:43mm;height:43mm;object-fit:contain}
+    .foot{text-align:center;font-size:8pt;line-height:1.5;border-top:1px solid #cbd4df;padding-top:2mm;color:#35445a}
+    .agent{font-weight:900;color:#102b4e}
+    @media screen{body{margin:16px auto;box-shadow:0 0 20px #0002}}
+    @media print{html,body{width:105mm;height:148mm}.ticket{page-break-inside:avoid;break-inside:avoid}}
+  </style></head><body><article class="ticket">
+    <header class="head"><div class="club">ATENEO KNIGHTS PICKLEBALL CLUB</div><div class="heading">BOARDING PASS</div></header>
+    <section class="event"><div class="eventname">${eventName}</div><div class="details">${eventDate} &nbsp;·&nbsp; BOARDING: ${esc(ticket.boardingTime||'TBA')}</div></section>
+    <div class="seq">${seq}</div><div class="name">${esc(ticket.name)}</div>
+    <div class="class">${esc(classText())}</div>
+    <div class="qrwrap"><img class="qr" src="${qrUrl}" alt="Ticket QR code"></div>
+    <footer class="foot"><div class="agent">CHECK-IN AGENT: AG-ONLINE</div><div>PRESENT THIS PASS AT THE BOARDING GATE</div></footer>
+  </article><script>
+    const img=document.querySelector('.qr');
+    function ready(){setTimeout(()=>window.print(),250)}
+    if(img.complete&&img.naturalWidth>0)ready();
+    else{
+      img.addEventListener('load',ready,{once:true});
+      img.addEventListener('error',()=>alert('QR code could not load. Check internet connection before printing.'),{once:true});
+    }
+  <\/script></body></html>`);
+
+  w.document.close();
+}
+
+async function emailPass(){
+  if(!ticket)return;
+
+  message(
+    'The automatic email is sent during check-in. If it failed, contact the event administrator to retry delivery.',
+    'info',
+    'passNotice'
+  );
+}
+
+function reset(){
+  ticket=null;
+  selectedMember=null;
+  selectedEvent=null;
+
+  $('member').value='';
+  $('event').value='';
+  $('ack').checked=false;
+
+  $('passQR').removeAttribute('src');
+
+  $('passCard').classList.add('hidden');
+  $('rulesCard').classList.add('hidden');
+  $('selectCard').classList.remove('hidden');
+
+  $('notice').className='notice';
+  $('passNotice').className='notice';
+}
+
+function esc(v){
+  return String(v??'').replace(/[&<>"']/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c]));
+}
+
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
