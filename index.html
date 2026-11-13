@@ -46,7 +46,7 @@ button.secondary{background:#e9eef5;color:var(--navy)}button:disabled{opacity:.5
 <div class="overlay" id="overlay"><div class="panel"><div class="anim"><div class="paddle"></div><div class="ball"></div></div><b>ATENEO KNIGHTS PICKLEBALL CLUB</b><h2 style="color:var(--gold);margin:12px 0 4px">LOADING...</h2><div id="loadingText">Preparing your boarding pass...</div><p style="font-size:12px;color:#d9e2ef">Please wait while we process your request.</p></div></div>
 <script>
 /* Existing deployed Apps Script URL */
-const API_URL='PASTE_NEW_AKPC_WEB_APP_URL_HERE';
+const API_URL='https://script.google.com/a/macros/addu.edu.ph/s/AKfycbwKk5bRehxWhkwpbWdGspOc5I0RnBLxOPKoEkzFqvMc5-YqA4wBn5mHRsloudrVITTq/exec';
 
 let events=[],members=[],ticket=null,selectedMember=null,selectedEvent=null;
 let checkInInProgress=false;
@@ -70,7 +70,7 @@ function hideLoading(){
 
 function api(params){
   return new Promise((resolve,reject)=>{
-    if(!API_URL || API_URL.includes('PASTE_NEW_AKPC') || !/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(API_URL)){
+    if(!API_URL || API_URL.includes('PASTE_NEW_AKPC') || !/^https:\/\/script\.google\.com\/(?:a\/macros\/[^/]+\/s\/|macros\/s\/)[^/]+\/exec$/.test(API_URL)){
       reject(new Error('The GitHub page is not connected to the new AKPC Apps Script deployment yet. Paste the NEW Web App URL ending in /exec into API_URL.'));
       return;
     }
