@@ -148,8 +148,10 @@ async function init(){
     $('member').disabled=false;
 
     if(events.length===0){
-      $('event').innerHTML='<option value="">No ACTIVE events found</option>';
-      message('Connected to Apps Script, but the EVENTS sheet returned no ACTIVE events. Check the new spreadsheet: EVENTS tab, columns A–D (Event ID, Event Name, Event Date, Status). Set the event Status in column D to ACTIVE.','error');
+      // Public-facing page: no active events is a normal state, not an error.
+      $('event').innerHTML='<option value="">No events currently available</option>';
+      $('notice').textContent='';
+      $('notice').className='notice';
     }else if(members.length===0){
       message('Events loaded, but no members were returned. Check FULL LIST OF MEMBERS and confirm names begin at row 16 in column A.','error');
     }else{
