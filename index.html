@@ -46,7 +46,7 @@ button.secondary{background:#e9eef5;color:var(--navy)}button:disabled{opacity:.5
 <div class="overlay" id="overlay"><div class="panel"><div class="anim"><div class="paddle"></div><div class="ball"></div></div><b>ATENEO KNIGHTS PICKLEBALL CLUB</b><h2 style="color:var(--gold);margin:12px 0 4px">LOADING...</h2><div id="loadingText">Preparing your boarding pass...</div><p style="font-size:12px;color:#d9e2ef">Please wait while we process your request.</p></div></div>
 <script>
 /* Existing deployed Apps Script URL */
-const API_URL='https://script.google.com/macros/s/AKfycbwZOYoWt__IVF8NXy_ZSWTohlqWg5yKbHxZZP1Lv2Lz-7mTt_ab1fjdRaMBDmKE5yH8Ng/exec';
+const API_URL='PASTE_NEW_AKPC_WEB_APP_URL_HERE';
 
 let events=[],members=[],ticket=null,selectedMember=null,selectedEvent=null;
 let checkInInProgress=false;
@@ -70,11 +70,16 @@ function hideLoading(){
 
 function api(params){
   return new Promise((resolve,reject)=>{
+    if(!API_URL || API_URL.includes('PASTE_NEW_AKPC') || !/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(API_URL)){
+      reject(new Error('The GitHub page is not connected to the new AKPC Apps Script deployment yet. Paste the NEW Web App URL ending in /exec into API_URL.'));
+      return;
+    }
+
     const cb='akpcCb'+Date.now()+Math.floor(Math.random()*10000);
     const script=document.createElement('script');
     const timeout=setTimeout(()=>{
       cleanup();
-      reject(new Error('The server did not respond. Check the Apps Script URL and deployment access.'));
+      reject(new Error('The AKPC server did not respond within 25 seconds. Check that the new Apps Script deployment is accessible to anyone with the link and that API_URL is the latest /exec URL.'));
     },25000);
 
     function cleanup(){
@@ -85,24 +90,27 @@ function api(params){
 
     window[cb]=data=>{
       cleanup();
+      if(data && data.success===false){
+        reject(new Error(data.message||'The AKPC server returned an error.'));
+        return;
+      }
       resolve(data);
     };
 
     script.onerror=()=>{
       cleanup();
-      reject(new Error('Unable to contact the AKPC server.'));
+      reject(new Error('Could not load the AKPC Apps Script endpoint. The deployment URL may be incorrect, outdated, or not accessible to anyone with the link.'));
     };
 
-    script.src=API_URL+'?'+new URLSearchParams({...params,callback:cb}).toString();
+    const query=new URLSearchParams({...params,callback:cb,_ts:Date.now()});
+    script.src=API_URL+'?'+query.toString();
     document.body.appendChild(script);
   });
 }
 
 async function init(){
-  if(API_URL.includes('PASTE_YOUR')){
-    message('Setup required: paste your deployed Apps Script Web App URL into API_URL in this file.','error');
-    return;
-  }
+  $('event').innerHTML='<option value="">Connecting to AKPC database...</option>';
+  $('member').disabled=true;
 
   try{
     const [ev,mem]=await Promise.all([
@@ -110,8 +118,15 @@ async function init(){
       api({api:'members'})
     ]);
 
-    events=Array.isArray(ev)?ev:[];
-    members=Array.isArray(mem)?mem:[];
+    if(!Array.isArray(ev)){
+      throw new Error('The Apps Script events endpoint did not return an event list. Server response: '+JSON.stringify(ev));
+    }
+    if(!Array.isArray(mem)){
+      throw new Error('The Apps Script members endpoint did not return a member list. Server response: '+JSON.stringify(mem));
+    }
+
+    events=ev.filter(e=>e && String(e.status||'').trim().toUpperCase()==='ACTIVE');
+    members=mem.filter(m=>m && m.name);
 
     $('event').innerHTML='<option value="">Select an event</option>';
 
@@ -129,8 +144,22 @@ async function init(){
       o.value=m.name;
       $('memberList').appendChild(o);
     });
+
+    $('member').disabled=false;
+
+    if(events.length===0){
+      $('event').innerHTML='<option value="">No ACTIVE events found</option>';
+      message('Connected to Apps Script, but the EVENTS sheet returned no ACTIVE events. Check the new spreadsheet: EVENTS tab, columns A–D (Event ID, Event Name, Event Date, Status). Set the event Status in column D to ACTIVE.','error');
+    }else if(members.length===0){
+      message('Events loaded, but no members were returned. Check FULL LIST OF MEMBERS and confirm names begin at row 16 in column A.','error');
+    }else{
+      message('Connected successfully. Loaded '+events.length+' active event(s) and '+members.length+' member(s).','success');
+    }
   }catch(e){
+    $('event').innerHTML='<option value="">Unable to load events</option>';
+    $('member').disabled=true;
     message(e.message,'error');
+    console.error('AKPC connection error:',e);
   }
 }
 
