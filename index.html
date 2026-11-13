@@ -148,19 +148,18 @@ async function init(){
     $('member').disabled=false;
 
     if(events.length===0){
-      // Public-facing page: no active events is a normal state, not an error.
+      // Public-facing page: no active events is a normal state. Stay silent.
       $('event').innerHTML='<option value="">No events currently available</option>';
-      $('notice').textContent='';
-      $('notice').className='notice';
-    }else if(members.length===0){
-      message('Events loaded, but no members were returned. Check FULL LIST OF MEMBERS and confirm names begin at row 16 in column A.','error');
-    }else{
-      message('Connected successfully. Loaded '+events.length+' active event(s) and '+members.length+' member(s).','success');
     }
+
+    // Keep initial connection/setup status silent for public users.
+    $('notice').textContent='';
+    $('notice').className='notice';
   }catch(e){
     $('event').innerHTML='<option value="">Unable to load events</option>';
     $('member').disabled=true;
-    message(e.message,'error');
+    $('notice').textContent='';
+    $('notice').className='notice';
     console.error('AKPC connection error:',e);
   }
 }
